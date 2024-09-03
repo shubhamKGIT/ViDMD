@@ -20,6 +20,7 @@ t = np.arange(N_SNAPS)
 # plt.scatter(t, np.mean(X, axis=0))
 # plt.show()
 
+# Adding some comment to udpate file
 bpodmd = BOPDMD(
     svd_rank=4,
     num_trials=30,
