@@ -1,26 +1,18 @@
 import numpy as np
 from pathlib import Path
 from typing import Optional
+import pickle
 
-def generator(x_range, t_range, *args, **kwargs):
-    x1, x2 = x_range
-    t1, t2 = t_range
-    X = np.linspace(x1, x2, num=50)    # say some param x
-    T = np.linspace(t1, t2, num=4)    # say some param t
-    param_grid =  np.meshgrid(X, T)
-    f1 = np.sech(X)
 
 class DataGenerator:
     """Object to generator data, save it in a file
     
         ATTRIBUTES
         ----------
-            args: dict
+            dataSource: dict
                 arguments used in generator
-            meta_info: dict
+            metadata: dict
                 meta data about the generator
-            data: np.ndarray
-                generated data with custom generator function
         
         METHODS
         -------
@@ -30,16 +22,37 @@ class DataGenerator:
         save_data(dum_filepath)
             saves the generated data in a custom file
     """
-    def __init__(self, kwargs: Optional[dict] = None, metadata: Optional[dict] = None):
-        self.kwargs = kwargs
+    def __init__(self, dataSource: Optional[dict] = None, metadata: Optional[dict] = None):
+        self.dataSource = dataSource
         self.metadata = metadata
+    
+    def __repr__(self):
+        return f"attributes: {self.__dict__.keys()}"
 
-    def generate_toy_data(self, generator_fn):
-        self.data: np.ndarray = generator_fn(self.kwargs)
+    def generate_toy_data(self, generator_fn, *args, **kwargs):
+        "generator from custom function passed"
+        self.data: np.ndarray = generator_fn(*args, **kwargs)
 
-    def save_data(self, filename: str , folder: Optional[Path]):
-        folder = Path(__file__).parent.parent / "data"
+    def save_data(self, filename: str, folder: Optional[Path] = None):
+        "dumps data to a file, can be read later, prefer pickle format"
+        if folder is None:
+            folder = Path(__file__).parent.parent / "data"
         dump_filepath = folder / filename
         print(f"saving data in file: {dump_filepath}")
         self.data.dump(file= dump_filepath)
-        print(f"Data dumped !")
+        print(f"Data dumped!")
+    
+    def read_pickle_dump(self, filepath, overwrite_data_attrib: bool = False):
+        "reads from a pickle dump"
+        print(f"Reading data from filepath: {filepath}")
+        data = []
+        with open(filepath, "rb") as f:
+            while True:
+                try:
+                    data.append(pickle.load(f))
+                except EOFError:
+                    break
+        if overwrite_data_attrib:
+            self.data = data
+        # return np.array(np.squeeze(data, axis = 0), dtype=np.uint8) # data has extra dimention so squeezed
+        return np.array(np.squeeze(data, axis=0))

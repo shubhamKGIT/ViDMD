@@ -46,6 +46,9 @@ class DmdBase:
         print(f"calling data read from {self.__class__.__name__} with attributes {self.dataObj.__dict__.keys()}")
         self.data: np.ndarray = self.dataObj.read()   # dataObject is assumed to have read method which returns numpy array
 
+    def transpose_data(self):
+        self.data = self.data.T
+
     def decompose(self, r = 5):
         "r is low rank proejction of relationship matrix A"
         X = self.data[:, :-1]   # (1 to n-1 columns)
@@ -65,7 +68,7 @@ class DmdBase:
         Vt_r = self.V_t[:r, :]
         print(f"Truncated matrix details: \n U_r:  {U_r.shape}, Einv_r: {Einv_r.shape}, Vt_r: {Vt_r.shape}")
         # Full rank
-        A_full = self.U.T @ self.time_shifted @ self.V_t.T @ np.diag(E_inv)
+        # A_full = self.U.T @ self.time_shifted @ self.V_t.T @ np.diag(E_inv)
         # Low rank relationship matrix A_tilde
         A_tilde = (U_r.T @ self.time_shifted) @ (Vt_r.T @ Einv_r) # relation matrix
         print(f"shape of low-rank relationship matrix A_tilde : {A_tilde.shape}")

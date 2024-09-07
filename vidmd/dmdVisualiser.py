@@ -17,3 +17,6 @@ class Visualiser:
         plt.grid(True)
         plt.title("Eigenvalues of $A^{tilde}$", fontsize = 20)
         plt.show()
+    
+    def visualise_mode(self, mode_number, spatial=False):
+        pass
