@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Optional
 import pickle
 
-
 class DataGenerator:
     """Object to generator data, save it in a file
     

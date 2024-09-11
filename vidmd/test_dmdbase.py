@@ -15,8 +15,13 @@ def my_dummy_reader(*args):
     return data
 
 dummy_Obj = DataReader(filename="something.some", folder=None, reader=my_dummy_reader)
-print(dummy_Obj)
+data = dummy_Obj.read()
+print(f"shape of data: {data.shape}")
 dummy_dmd = DmdBase(dataObject=dummy_Obj)
-dummy_dmd.prepare_data()
-dummy_dmd.decompose(r=30)
-print(f"shape of modess: {dummy_dmd.modes.shape}")
+print(dummy_dmd)
+dummy_dmd.update_state(data_read= False, columns_align_temporal= True, decomposed=False, modes_calculated= False)
+print(dummy_dmd)
+dummy_dmd.prepare_data(dmd_type_temporal=True)
+dummy_dmd.decompose()
+dummy_dmd.calc_low_rank_eigvecs_modes(r = 30)
+print(f"shape of modes: {dummy_dmd.modes.shape}")

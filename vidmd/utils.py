@@ -1,5 +1,8 @@
 import numpy as np
 import pickle
+from functools import wraps
+import time
+import os
 
 def read_pickle_dump(filepath):
     "reads from a pickle dump"
@@ -29,3 +32,19 @@ def setup_toy_grid(n = 2000, m = 400):
     n, m = n, m
     X, t = param_grid(x_range = x_range, t_range = t_range, n = n, m = m)
     return X, t
+
+def timeit(f):
+    @wraps(f)
+    def wrapped_fn(*args, **kwargs):
+        start_time = time.time()
+        res = f(*args, **kwargs)
+        end_time = time.time()
+        print(f"\n ***** Took {end_time - start_time} s to execute {f.__name__} ***** \n")
+        return res
+    return wrapped_fn
+
+def get_filename_with_ext(filelist: list[str], ext: str) -> str:
+    "gets first file which matches extension or file with certain filename and extension"
+    for f in filelist:
+        if os.path.splitext(f)[-1].lower() == ext:
+            return f 
